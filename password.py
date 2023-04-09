@@ -1,23 +1,28 @@
-# Analizar password 
-# Recomendacion de uno mas seguro
-# Almacenar passwords para que funcione como una plataforma llamada 1Password
+# Features to add:
+# 1. Password Analyzer
+# 2. Generate Password
+# 3. Save Password
+# 4. Retrieve Password
+# 5. Update Password
+# 6. Exit 
 
-# Lo primero es crear los menus, 
+# 1 Create the Menu, 
+#how to store the passwords? How to retrieve them? Should I recommend a password in every feature(analyzer)? 
+# 2 Create the Password Analyzer
+
 
 print("------------------------------")
-print ("Welcome to UrPass") #nombre de la app/web
+print ("Welcome to UrPass") #name of the app/web
 print("------------------------------")
 
 
 # Change everything to english "IMPORTANT"
 
 
-# Olvidé declarar random y string / Hacer double check 
-
 import random
 import string
 
-passwords = {}
+passwords = {} # I think I dont need this anymore since I am using a txt file / Question to ask.
 
 def menu():
     while True:
@@ -50,8 +55,8 @@ def menu():
         elif choice == "5":
             app_web = input("Enter the name of the website/Storage: ")
             username = input("Enter the username: ") 
-            password = input("Enter the new password: ")
-            update_password(app_web, password, username)
+            password2 = input("Enter the new password: ")
+            update_password(app_web, password2, username)
         elif choice == "6":
             print("Goodbye!")
             break
@@ -113,6 +118,7 @@ def save_password(app_web, username, password):
         passwords[app_web] = {username: password}
     with open("passwords.txt", "a") as f:
         f.write(f"Password saved for {username} in {app_web}, {password}\n")
+    print("Password saved successfully")
 
 
 def retrieve_password(app_web):
@@ -122,26 +128,26 @@ def retrieve_password(app_web):
          app_Web = myfile.split(", ")[0].strip()          
          if(app_web in app_Web):
              print("Your password is:", password)
+             break
+        else: 
+            print("Password not found")
         
 
-def update_password(password, app_web, username):   
-   
-
-
-    
-
-
-    '''
-    if app_web in passwords and username in passwords[app_web]:
-        passwords[app_web][username] = password
-    else:
-        passwords[app_web] = {username: password}
-    with open("passwords.txt", "a") as f:
-        f.write(f"Password updated for {username} in {app_web}, {password}\n")
-    '''
+def update_password(app_web, username, password2):
+    f = open("passwords.txt", 'r+')
+    d = f.readlines()
+    f.seek(0)
+    for i in d:
+        if app_web in i:
+            i = i.replace(i, f"Password updated for {password2} in {app_web}, {username}\n")
+        f.write(i)
+    f.truncate()
+    f.close()
+    print("Password updated successfully")
 
 
 menu()
+
 
 
 
