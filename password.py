@@ -1,77 +1,105 @@
 # Features to add:
-# 1. Password Analyzer
-# 2. Generate Password
-# 3. Save Password
-# 4. Retrieve Password
-# 5. Update Password
-# 6. Exit 
+# 1. login and register(working on it)
 
-# 1 Create the Menu, 
-#how to store the passwords? How to retrieve them? Should I recommend a password in every feature(analyzer)? 
-# 2 Create the Password Analyzer
+# print image in console ? 
 
+
+import pyfiglet
+text = pyfiglet.figlet_format("UrPass",
+                              font = "epic")
+
+# Lo siguiente comentado es la opcion para imprimir en consola que se ve super pixeleado. 
+'''
+from PIL import Image
+from colorit import init_colorit, background
+init_colorit()
+image = Image.open("urpass.png")
+image = image.resize((45, 12), resample=Image.BOX)
+fontsize = 2
+for y in range(image.height):
+    for x in range(image.width):
+        print(background(" ", image.getpixel((x, y))), end="")
+    print()
+'''
+# Esta es la segunda opcion en donde se hace algo llamada ASCii bueno y una parte arriba
 
 print("------------------------------")
-print ("Welcome to UrPass") #name of the app/web
+print ("-------- Welcome to ---------")
+print(text) #name of the app/web
+print("This is a password manager where you can store your passwords and usernames")
 print("------------------------------")
 
 
-# Change everything to english "IMPORTANT"
 
 
 import random
 import string
+import colorama
+import traceback
 
 passwords = {} # I think I dont need this anymore since I am using a txt file / Question to ask.
 
-def menu():
+def menu(): #this is the menu inside the app.
+    
+    
     while True:
-        print("Please select an option:\n")
-        print("╔----------------------╗")
-        print("| 1. Password Analyzer |")
-        print("| 2. Generate Password |")
-        print("| 3. Save Password     |")
-        print("| 4. Retrieve Password |")
-        print("| 5. Update Password   |")
-        print("| 6. Exit              |")
-        print("╚----------------------╝")
+        try:
+            print(colorama.Fore.BLUE + "Please select an option:\n")
+            print("╔----------------------╗")
+            print("| 1. Password Analyzer |")
+            print("| 2. Generate Password |")
+            print("| 3. Save Password     |")
+            print("| 4. Retrieve Password |")
+            print("| 5. Update Password   |")
+            print("| 6. Exit              |")
+            print("╚----------------------╝\n")
+            print("Option: ")
 
-        choice = input()
+            choice = input()
 
-        if choice == "1":
-            password = input("Enter the password you want to analyze: ")
-            password_analyzer(password)
-        elif choice == "2":
-            password = generate_password()
-            print("Generated password:", password)
-        elif choice == "3":
-            app_web = input("Enter the name of the website/Storage: ")
-            username = input("Enter the username: ") 
-            password = input("Enter the password: ")
-            save_password(app_web, username, password)
-        elif choice == "4":
-            app_web = input("Enter the name of the website/Storage: ")
-            retrieve_password(app_web)
-        elif choice == "5":
-            app_web = input("Enter the name of the website/Storage: ")
-            username = input("Enter the username: ") 
-            password2 = input("Enter the new password: ")
-            update_password(app_web, password2, username)
-        elif choice == "6":
-            print("Goodbye!")
-            break
-        else:
-            print("Invalid option. Please try again.")
-
-# I'll be good if I remove the "username" variable from the function and just return the password
+            if choice == "1":
+                password = input("Enter the password you want to analyze: ")
+                password_analyzer(password)
+            elif choice == "2":
+                password = generate_password()
+                print("Generated password:", password)
+            elif choice == "3":
+                app_web = input("Enter the name of the website/Storage: ")
+                username = input("Enter the username: ") 
+                password = input("Enter the password: ")
+                save_password(app_web, username, password)
+            elif choice == "4":
+                app_web = input("Enter the name of the website/Storage: ")
+                retrieve_password(app_web)
+            elif choice == "5":
+                app_web = input("Enter the name of the website/Storage: ")
+                username = input("Enter the username: ") 
+                password2 = input("Enter the new password: ")
+                update_password(app_web, password2, username)
+            elif choice == "6":
+                print(colorama.Fore.YELLOW +"Goodbye!")
+                break
+            else: 
+                print(colorama.Fore.RED + "Invalid option. Please try again.")
+                raise ValueError("Invalid option")
+            
+        except ValueError as ve:
+            with open("error.log", "a") as f:
+                 f.write("Unexpected error: {}\n".format(str(ve)))
+                 print(colorama.Fore.RED + "Invalid option. Please try again.")
+        
+        except:
+            traceback.print_exc()
 
 
 def password_analyzer(password):
+
     length = len(password)
     lowercase = False
     uppercase = False
     digit = False
     special_char = False
+    missing_criteria = []
 
     for char in password:
         if char.islower():
@@ -83,24 +111,26 @@ def password_analyzer(password):
         elif char in "!@#$%^&*()_+-=[]{}|;':\",./<>?":
             special_char = True
 
-    if length < 8:
-        print("The password is very short. It is recommended to use at least 8 characters.")
-        return False
-    elif not lowercase:
-        print("Must contain at least one lowercase letter.")
-        return False
-    elif not uppercase:
-        print("Must contain at least one uppercase letter.")
-        return False
-    elif not digit:
-        print("Must contain at least one number.")
-        return False
-    elif not special_char:
-        print("Must contain at least one special character.")
+    if length < 12:
+        missing_criteria.append("The password is very short. It is recommended to use at least 8 characters.")
+    if not lowercase:
+        missing_criteria.append("Must contain at least one lowercase letter.")
+    if not uppercase:
+        missing_criteria.append("Must contain at least one uppercase letter.")
+    if not digit:
+        missing_criteria.append("Must contain at least one number.")
+    if not special_char:
+        missing_criteria.append("Must contain at least one special character.")
+        
+    if missing_criteria:
+        print(colorama.Fore.RED + "Password is not strong. The following criteria are missing:")
+        for criterion in missing_criteria:
+            print("- " + criterion)
         return False
     else:
-        print("Password is strong.")
+        print(colorama.Fore.GREEN +"Password is strong.")
         return True
+    
 
 
 def generate_password():
@@ -111,6 +141,7 @@ def generate_password():
     return password
 
 
+
 def save_password(app_web, username, password):
     if app_web in passwords:
         passwords[app_web][username] = password
@@ -118,36 +149,69 @@ def save_password(app_web, username, password):
         passwords[app_web] = {username: password}
     with open("passwords.txt", "a") as f:
         f.write(f"Password saved for {username} in {app_web}, {password}\n")
-    print("Password saved successfully")
+    print(colorama.Fore.GREEN +"Password saved successfully")
+
 
 
 def retrieve_password(app_web):
-    with open ('passwords.txt', 'rt') as myfile:  
-        for myfile in myfile:  
-         password = myfile.split(", ")[1].strip() 
-         app_Web = myfile.split(", ")[0].strip()          
-         if(app_web in app_Web):
-             print("Your password is:", password)
-             break
-        else: 
-            print("Password not found")
+    with open ('passwords.txt', 'rt') as myfile: 
+        try: 
+            for myfile in myfile:  
+                password = myfile.split(", ")[1].strip() 
+            app_Web = myfile.split(", ")[0].strip()          
+            if(app_web in app_Web):
+                print("Your password is:", password)
+            else: 
+                print(colorama.Fore.RED + "Password not found")
+                raise ValueError("Invalid option")
+            
+        except ValueError as ve:
+            with open("error.log", "a") as f:
+                 f.write("Unexpected error, Username or Password: {}\n".format(str(ve)))
+                 print(colorama.Fore.RED + "Invalid Username or Password. Please try again.")
         
+        except:
+            traceback.print_exc()
+        
+
 
 def update_password(app_web, username, password2):
     f = open("passwords.txt", 'r+')
     d = f.readlines()
     f.seek(0)
-    for i in d:
-        if app_web in i:
-            i = i.replace(i, f"Password updated for {password2} in {app_web}, {username}\n")
-        f.write(i)
-    f.truncate()
-    f.close()
-    print("Password updated successfully")
+    try: 
+        for i in d:
+            if app_web in i:
+                i = i.replace(i, f"Password updated for {password2} in {app_web}, {username}\n")
+            f.write(i)
+        f.truncate()
+        f.close()
+        print(colorama.Fore.GREEN + "Password updated successfully")
+    except ValueError as ve:
+        with open("error.log", "a") as f:
+             f.write("Unexpected error, Username or Password: {}\n".format(str(ve)))
+             print(colorama.Fore.RED + "Invalid Username or Password. Please try again.")
+    except:
+        traceback.print_exc()
+
 
 
 menu()
 
+
+
+
+
+
+
+
+
+#hot to test my code?
+#how to make the code more efficient? less lines of code? 
+#how to make the code more secure? 
+#how to make the code more user friendly? Perhaps I need more FE (Front End)
+#how to make the code more professional?
+#how to make the code more readable?
 
 
 
