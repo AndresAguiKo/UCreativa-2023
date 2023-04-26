@@ -8,20 +8,6 @@ import pyfiglet
 text = pyfiglet.figlet_format("UrPass",
                               font = "epic")
 
-# Lo siguiente comentado es la opcion para imprimir en consola que se ve super pixeleado. 
-'''
-from PIL import Image
-from colorit import init_colorit, background
-init_colorit()
-image = Image.open("urpass.png")
-image = image.resize((45, 12), resample=Image.BOX)
-fontsize = 2
-for y in range(image.height):
-    for x in range(image.width):
-        print(background(" ", image.getpixel((x, y))), end="")
-    print()
-'''
-# Esta es la segunda opcion en donde se hace algo llamada ASCii bueno y una parte arriba
 
 print("------------------------------")
 print ("-------- Welcome to ---------")
@@ -37,7 +23,7 @@ import string
 import colorama
 import traceback
 
-passwords = {} # I think I dont need this anymore since I am using a txt file / Question to ask.
+passwords = {} # ?
 
 def menu(): #this is the menu inside the app.
     
@@ -197,11 +183,6 @@ def update_password(app_web, username, password2):
 
 
 menu()
-
-
-
-
-
 
 
 
